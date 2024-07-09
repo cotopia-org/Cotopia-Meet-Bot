@@ -3,7 +3,8 @@ import json
 import time
 
 import discord
-import log_processor
+
+from utils import write_event_to_db
 
 
 # returns epoch of NOW: int
@@ -67,7 +68,7 @@ You and all other members in the temp voice channel, will be disconnected from a
                     },
                     "message": interaction.message.content,
                 }
-                log_processor.write_event_to_db(
+                write_event_to_db(
                     driver=interaction.guild.id,
                     epoch=rightnow(),
                     kind="DECLINE TALK",
