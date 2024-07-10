@@ -41,3 +41,43 @@ def write_event_to_db(
     cur.close()
     conn.close()
     return id_of_added_row
+
+
+def create_header_text(author, member2, member3, member4):
+    text = (
+        "Hey " + member2.mention + ",\n" + author.mention + " wants to talk with you."
+    )
+    if member3 is not None:
+        split = text.split(",\n", 1)
+        text = split[0] + ", " + member3.mention + ",\n" + split[1]
+
+    if member4 is not None:
+        split = text.split(",\n", 1)
+        text = split[0] + ", " + member4.mention + ",\n" + split[1]
+
+    return text
+
+
+def create_status_table(author, member2, member3, member4):
+    the_table = "--------------------"
+    the_table = (
+        the_table + "\n" + author.mention + ":   :hourglass_flowing_sand: pending"
+    )
+    the_table = (
+        the_table + "\n" + member2.mention + ":   :hourglass_flowing_sand: pending"
+    )
+    if member3 is not None:
+        the_table = (
+            the_table + "\n" + member3.mention + ":   :hourglass_flowing_sand: pending"
+        )
+    if member4 is not None:
+        the_table = (
+            the_table + "\n" + member4.mention + ":   :hourglass_flowing_sand: pending"
+        )
+
+
+def gen_text(author, member2, member3, member4, description, jump_url):
+    # if description is not None:
+    #     text = text + "\n\nDescription:\n" + description
+    # the_message = await ctx.send(text + "\n\n" + channel.jump_url, view=view)
+    pass
