@@ -54,7 +54,7 @@ def run():
         await ctx.send("Your Discord ID is " + str(ctx.author.id), ephemeral=True)
 
     @bot.hybrid_command()
-    async def talk_with(
+    async def test(
         ctx,
         member: discord.Member,
         description: str | None = None,
@@ -115,11 +115,18 @@ def run():
         # print("temp_channels:   ")
         # print(temp_channels)
 
-        
-        
-        
-
-        the_message = await ctx.send("text", view=view)
+        the_message = await ctx.send(
+            utils.gen_text(
+                author=ctx.author,
+                member2=member,
+                member3=member3,
+                member4=member4,
+                description=description,
+                jump_url=channel.jump_url,
+                author_moved=author_moved,
+            ),
+            view=view,
+        )
 
         # # play ring alarm when user sent the command
 
@@ -127,9 +134,6 @@ def run():
         # temp_messages[channel] = the_message
         # print("temp_messages:   ")
         # print(temp_messages)
-
-        
-
 
         # if author_moved:
         #     talk_with_msg = await ctx.channel.fetch_message(the_message.id)

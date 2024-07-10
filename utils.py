@@ -1,3 +1,4 @@
+import datetime
 from os import getenv
 
 import discord
@@ -58,11 +59,21 @@ def create_header_text(author, member2, member3, member4):
     return text
 
 
-def create_status_table(author, member2, member3, member4):
+def create_status_table(author, member2, member3, member4, author_moved):
     the_table = "--------------------"
-    the_table = (
-        the_table + "\n" + author.mention + ":   :hourglass_flowing_sand: pending"
-    )
+    if author_moved:
+        the_table = (
+            the_table
+            + "\n"
+            + author.mention
+            + ":   :green_circle: joined `"
+            + datetime.datetime.now().strftime("%H:%M:%S")
+            + "`"
+        )
+    else:
+        the_table = (
+            the_table + "\n" + author.mention + ":   :hourglass_flowing_sand: pending"
+        )
     the_table = (
         the_table + "\n" + member2.mention + ":   :hourglass_flowing_sand: pending"
     )
@@ -76,8 +87,13 @@ def create_status_table(author, member2, member3, member4):
         )
 
 
-def gen_text(author, member2, member3, member4, description, jump_url):
-    # if description is not None:
-    #     text = text + "\n\nDescription:\n" + description
-    # the_message = await ctx.send(text + "\n\n" + channel.jump_url, view=view)
-    pass
+def gen_text(author, member2, member3, member4, description, jump_url, author_moved):
+    text = jump_url + "\n\n" + create_header_text(author, member2, member3, member4)
+    if description is not None:
+        text = text + "\n\n**Description:**\n" + description
+    text = (
+        text
+        + "\n\n"
+        + create_status_table(author, member2, member3, member4, author_moved)
+    )
+    return text
