@@ -1,3 +1,4 @@
+import asyncio
 import json
 import time
 
@@ -9,6 +10,9 @@ import utils
 from view import TalkWithView
 
 logger = settings.logging.getLogger("bot")
+
+temp_channels = []
+temp_messages = {}
 
 
 def run():
@@ -104,17 +108,19 @@ def run():
             print("user is not connected to voice.")
             author_moved = False
 
+        global temp_channels
+        temp_channels.append(channel.id)
+        print("temp_channels:   ")
+        print(temp_channels)
+
+        # create view
         view = TalkWithView()
         view.author_id = ctx.author.id
         view.voice_channel = channel
         view.members = members
         view.members_str = members_str
 
-        # global temp_channels
-        # temp_channels.append(channel)
-        # print("temp_channels:   ")
-        # print(temp_channels)
-
+        # send message
         the_message = await ctx.send(
             utils.gen_text(
                 author=ctx.author,
@@ -128,41 +134,26 @@ def run():
             view=view,
         )
 
-        # # play ring alarm when user sent the command
+        global temp_messages
+        temp_messages[channel.id] = the_message
+        print("temp_messages:   ")
+        print(temp_messages)
 
-        # global temp_messages
-        # temp_messages[channel] = the_message
-        # print("temp_messages:   ")
-        # print(temp_messages)
+        # play ring alarm
+        await utils.play_ring(member=member)
+        if member3 is not None and member3.voice.channel != member.voice.channel:
+            await utils.play_ring(member=member3)
+        if member4 is not None and member4.voice.channel != member.voice.channel:
+            await utils.play_ring(member=member4)
 
-        # if author_moved:
-        #     talk_with_msg = await ctx.channel.fetch_message(the_message.id)
-        #     c1 = talk_with_msg.content
-        #     c2 = c1.replace(
-        #         ctx.author.mention + ":   :hourglass_flowing_sand: pending",
-        #         ctx.author.mention
-        #         + ":   :green_circle: joined `"
-        #         + datetime.datetime.now().strftime("%H:%M:%S")
-        #         + "`",
-        #         1,
-        #     )
-        #     await talk_with_msg.edit(content=c2)
+        # Handling No Response
+        task_edit_msg = asyncio.create_task(
+            utils.write_no_response(ctx=ctx, msg_id=the_message.id),
+            name=f"editing talk_with msg with no response {the_message.id} at {ctx.guild.id}",
+        )
+        await task_edit_msg
 
-        # # Handling No Response
-        # async def write_no_response(msg_id: int):
-        #     await asyncio.sleep(180)  # 3 minutes
-        #     talk_with_msg = await ctx.channel.fetch_message(msg_id)
-        #     c1 = talk_with_msg.content
-        #     c2 = c1.replace(
-        #         ":   :hourglass_flowing_sand: pending", ":   :interrobang: no response"
-        #     )
-        #     await talk_with_msg.edit(content=c2)
-
-        # task_edit_msg = asyncio.create_task(
-        #     write_no_response(the_message.id),
-        #     name=f"editing talk_with msg with no response {the_message.id} at {ctx.guild.id}",
-        # )
-        # await task_edit_msg
+        print("DONE!")
 
     bot.run(settings.DISCORD_API_SECRET, root_logger=True)
 

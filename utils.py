@@ -1,11 +1,11 @@
+import asyncio
 import datetime
+from asyncio import sleep
 from os import getenv
 
 import discord
 import psycopg2
 from dotenv import load_dotenv
-from asyncio import sleep
-
 
 
 async def get_category(guild):
@@ -104,9 +104,7 @@ def gen_text(author, member2, member3, member4, description, jump_url, author_mo
     return text
 
 
-
-
-async def play_ring(member, voice='assets/sounds/ring3.mp3'):
+async def play_ring(member, voice="assets/sounds/ring3.mp3"):
     if member.voice is not None:
         if not member.voice.self_deaf:
             voice_channel = member.voice.channel
@@ -115,5 +113,14 @@ async def play_ring(member, voice='assets/sounds/ring3.mp3'):
             while vc.is_playing():
                 await sleep(0.5)
             await vc.disconnect()
+    return "Ok"
 
-    return 'Ok'
+
+async def write_no_response(ctx, msg_id: int):
+    await asyncio.sleep(300)  # 5 minutes
+    talk_with_msg = await ctx.channel.fetch_message(msg_id)
+    c1 = talk_with_msg.content
+    c2 = c1.replace(
+        ":   :hourglass_flowing_sand: pending", ":   :interrobang: no response"
+    )
+    await talk_with_msg.edit(content=c2)
