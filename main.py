@@ -106,7 +106,24 @@ def run():
         # Ignoring Bots
         if member.bot:
             return
+        
+        # calling the  del_temps(channel) func
+        task_del_chan = None
+        global temp_channels
+        if before.channel.id in temp_channels:
+            if len(before.channel.members) == 0:
+                task_del_chan = asyncio.create_task(
+                    del_temps(before.channel),
+                    name=f"deleting temp channel {before.channel.id}",
+                )
+                await task_del_chan
+        
+        # When user joins a /talk_with channel
+        global temp_messages
+        if after.channel.id in temp_messages:
+            await utils.edit_tw_text(member=member, temp_messages=temp_messages, after_channel=after.channel)
 
+    
     @bot.hybrid_command(description="Replies with pong!")
     async def ping(ctx):
         print("this is ping. the server is:")
