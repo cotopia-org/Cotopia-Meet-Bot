@@ -117,7 +117,7 @@ async def play_ring(member, voice="assets/sounds/ring3.mp3"):
 
 
 async def write_no_response(ctx, msg_id: int):
-    await asyncio.sleep(300)  # 5 minutes
+    await asyncio.sleep(180)  # 3 minutes
     talk_with_msg = await ctx.channel.fetch_message(msg_id)
     c1 = talk_with_msg.content
     c2 = c1.replace(

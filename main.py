@@ -15,6 +15,62 @@ temp_channels = []
 temp_messages = {}
 
 
+async def del_temps(channel):
+    print("del_temp_chan been called!")
+    print("the channel is:  " + str(channel))
+    await asyncio.sleep(180)  # 3 minutes
+    global temp_channels
+    if len(channel.members) == 0:
+        try:
+            print("trying to delete channel:    ")
+            print(channel)
+            await channel.delete()
+            temp_channels.remove(channel.id)
+            print("channel was removed")
+        except Exception as e:
+            print("Sorry couldn't delete the temp channel!")
+            print(e)
+        try:
+            global temp_messages
+            # msg = temp_messages[channel]
+            msg = await temp_messages[channel.id].channel.fetch_message(
+                temp_messages[channel.id].id
+            )
+            print("trying to edit text:   ")
+            print(msg)
+            msg_content = msg.content
+            # getting the status part
+            status_part = msg_content.split("--------------------")[1]
+            # getting the author mention
+            author_mention = msg_content.split(">,\n")[1]
+            author_mention = author_mention.split(" wants to talk with you.")[0]
+            # calculating the duration of the meeting
+            msg_created_at = msg.created_at.timestamp()
+            duration = (
+                int(time.time()) - msg_created_at - 180
+            )  # minus 180 seconds, time of waiting before deleting voice channel
+            duration = round((duration / 60), 1)
+            #
+            # await msg.delete()
+            # editing the message
+            new_content = (
+                author_mention
+                + "'s meeting ended!\n"
+                + "Duration: "
+                + str(duration)
+                + " minutes"
+                + "\n--------------------"
+                + status_part
+                + "--------------------"
+            )
+            await msg.edit(content=new_content, view=None)
+            del temp_messages[channel.id]
+            print("message was edited")
+        except Exception as e:
+            print("Sorry couldn't edit the /talk_with message!")
+            print(e)
+
+
 def run():
     intents = discord.Intents.default()
     intents.message_content = True
