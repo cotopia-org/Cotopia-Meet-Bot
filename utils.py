@@ -4,6 +4,8 @@ from os import getenv
 import discord
 import psycopg2
 from dotenv import load_dotenv
+from asyncio import sleep
+
 
 
 async def get_category(guild):
@@ -85,6 +87,9 @@ def create_status_table(author, member2, member3, member4, author_moved):
         the_table = (
             the_table + "\n" + member4.mention + ":   :hourglass_flowing_sand: pending"
         )
+    the_table = the_table + "\n--------------------"
+
+    return the_table
 
 
 def gen_text(author, member2, member3, member4, description, jump_url, author_moved):
@@ -97,3 +102,18 @@ def gen_text(author, member2, member3, member4, description, jump_url, author_mo
         + create_status_table(author, member2, member3, member4, author_moved)
     )
     return text
+
+
+
+
+async def play_ring(member, voice='assets/sounds/ring3.mp3'):
+    if member.voice is not None:
+        if not member.voice.self_deaf:
+            voice_channel = member.voice.channel
+            vc = await voice_channel.connect()
+            vc.play(discord.FFmpegPCMAudio(voice))
+            while vc.is_playing():
+                await sleep(0.5)
+            await vc.disconnect()
+
+    return 'Ok'
