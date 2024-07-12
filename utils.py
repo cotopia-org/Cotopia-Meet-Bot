@@ -124,3 +124,65 @@ async def write_no_response(ctx, msg_id: int):
         ":   :hourglass_flowing_sand: pending", ":   :interrobang: no response"
     )
     await talk_with_msg.edit(content=c2)
+
+
+async def edit_tw_text(member, temp_messages, after_channel):
+    talk_with_msg = await temp_messages[after_channel.id].channel.fetch_message(
+        temp_messages[after_channel.id].id
+    )
+    talk_with_text = talk_with_msg.content
+    if member.mention + ":   :hourglass_flowing_sand: pending" in talk_with_text:
+        c2 = talk_with_text.replace(
+            member.mention + ":   :hourglass_flowing_sand: pending",
+            member.mention
+            + ":   :green_circle: joined `"
+            + datetime.datetime.now().strftime("%H:%M:%S")
+            + "`",
+            1,
+        )
+    elif member.mention + ":   :red_circle: declined `" in talk_with_text:
+        c2 = talk_with_text.replace(
+            member.mention + ":   :red_circle: declined",
+            member.mention + ":   :green_circle: joined",
+            1,
+        )
+        # now we need to update the timestamp
+        split = c2.split(member.mention + ":   :green_circle: joined `", 1)
+        d0 = split[0]
+        d1 = member.mention + ":   :green_circle: joined `"
+        d2 = datetime.datetime.now().strftime("%H:%M:%S") + "`"
+        d3 = split[1].split("`", 1)[1]
+        c2 = d0 + d1 + d2 + d3
+    elif member.mention + ":   :orange_circle: will join in 5 mins `" in talk_with_text:
+        c2 = talk_with_text.replace(
+            member.mention + ":   :orange_circle: will join in 5 mins",
+            member.mention + ":   :green_circle: joined",
+            1,
+        )
+        # now we need to update the timestamp
+        split = c2.split(member.mention + ":   :green_circle: joined `", 1)
+        d0 = split[0]
+        d1 = member.mention + ":   :green_circle: joined `"
+        d2 = datetime.datetime.now().strftime("%H:%M:%S") + "`"
+        d3 = split[1].split("`", 1)[1]
+        c2 = d0 + d1 + d2 + d3
+    elif (
+        member.mention + ":   :orange_circle: will join in 15 mins `" in talk_with_text
+    ):
+        c2 = talk_with_text.replace(
+            member.mention + ":   :orange_circle: will join in 15 mins",
+            member.mention + ":   :green_circle: joined",
+            1,
+        )
+        # now we need to update the timestamp
+        split = c2.split(member.mention + ":   :green_circle: joined `", 1)
+        d0 = split[0]
+        d1 = member.mention + ":   :green_circle: joined `"
+        d2 = datetime.datetime.now().strftime("%H:%M:%S") + "`"
+        d3 = split[1].split("`", 1)[1]
+        c2 = d0 + d1 + d2 + d3
+    else:
+        c2 = "farghi nakarde ke baba"
+
+    if c2 != "farghi nakarde ke baba":
+        await talk_with_msg.edit(content=c2)
