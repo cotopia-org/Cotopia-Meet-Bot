@@ -21,6 +21,8 @@ def create_channel_overwrites(guild, members: list):
     }
     for each in members:
         overwrites[each] = discord.PermissionOverwrite(connect=True, view_channel=True)
+    
+    return overwrites
 
 
 def write_event_to_db(
@@ -124,6 +126,10 @@ async def write_no_response(ctx, msg_id: int):
         ":   :hourglass_flowing_sand: pending", ":   :interrobang: no response"
     )
     await talk_with_msg.edit(content=c2)
+
+
+async def kick_unresponsive(text):
+    pass
 
 
 async def edit_tw_text(member, temp_messages, after_channel):
