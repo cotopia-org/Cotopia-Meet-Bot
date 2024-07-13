@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import re
 from asyncio import sleep
 from os import getenv
 
@@ -21,7 +22,7 @@ def create_channel_overwrites(guild, members: list):
     }
     for each in members:
         overwrites[each] = discord.PermissionOverwrite(connect=True, view_channel=True)
-    
+
     return overwrites
 
 
@@ -128,8 +129,21 @@ async def write_no_response(ctx, msg_id: int):
     await talk_with_msg.edit(content=c2)
 
 
-async def kick_unresponsive(text):
-    pass
+def find_unresponsives(text: str):
+    the_table = text.split("--------------------")
+    the_table = the_table[1]
+    lines = the_table.split("\n")
+    unresponsives = []
+    for each in lines:
+        if ":interrobang: no response" in each:
+            sub1 = "<@"
+            sub2 = ">:"
+            s = str(re.escape(sub1))
+            e = str(re.escape(sub2))
+            res = re.findall(s + "(.*)" + e, each)[0]
+            unresponsives.append(int(res))
+
+    return unresponsives
 
 
 async def edit_tw_text(member, temp_messages, after_channel):
