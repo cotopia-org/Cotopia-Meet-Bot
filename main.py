@@ -49,7 +49,7 @@ async def del_temps(channel):
             duration = (
                 int(time.time()) - msg_created_at - 180
             )  # minus 180 seconds, time of waiting before deleting voice channel
-            duration = round((duration / 60), 0)
+            duration = int(round((duration / 60), 0))
             #
             # await msg.delete()
             # editing the message
@@ -134,6 +134,8 @@ def run():
         member3: discord.Member | None = None,
         member4: discord.Member | None = None,
     ):
+        await ctx.defer()
+        
         # create members list
         members = []
         members.append(ctx.author)
@@ -209,11 +211,15 @@ def run():
         print(temp_messages)
 
         # play ring alarm
-        await utils.play_ring(member=member)
-        if member3 is not None and member3.voice.channel != member.voice.channel:
-            await utils.play_ring(member=member3)
-        if member4 is not None and member4.voice.channel != member.voice.channel:
-            await utils.play_ring(member=member4)
+        try:
+            await utils.play_ring(member=member)
+            if member3 is not None and member3.voice.channel != member.voice.channel:
+                await utils.play_ring(member=member3)
+            if member4 is not None and member4.voice.channel != member.voice.channel:
+                await utils.play_ring(member=member4)
+        except Exception as e:
+            print("something went wrong while playying rings!")
+            print(e)
 
         # Handling No Response
         task_edit_msg = asyncio.create_task(
@@ -222,7 +228,7 @@ def run():
         )
         await task_edit_msg
 
-        print("DONE!")
+        print("talk_with is DONE!")
 
     bot.run(settings.DISCORD_API_SECRET, root_logger=True)
 
