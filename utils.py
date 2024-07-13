@@ -119,16 +119,6 @@ async def play_ring(member, voice="assets/sounds/ring3.mp3"):
     return "Ok"
 
 
-async def write_no_response(ctx, msg_id: int):
-    await asyncio.sleep(180)  # 3 minutes
-    talk_with_msg = await ctx.channel.fetch_message(msg_id)
-    c1 = talk_with_msg.content
-    c2 = c1.replace(
-        ":   :hourglass_flowing_sand: pending", ":   :interrobang: no response"
-    )
-    await talk_with_msg.edit(content=c2)
-
-
 def find_unresponsives(text: str):
     the_table = text.split("--------------------")
     the_table = the_table[1]
@@ -144,6 +134,28 @@ def find_unresponsives(text: str):
             unresponsives.append(int(res))
 
     return unresponsives
+
+
+async def write_no_response(ctx, msg_id: int):
+    await asyncio.sleep(180)  # 3 minutes
+    talk_with_msg = await ctx.channel.fetch_message(msg_id)
+    c1 = talk_with_msg.content
+    c2 = c1.replace(
+        ":   :hourglass_flowing_sand: pending", ":   :interrobang: no response"
+    )
+    await talk_with_msg.edit(content=c2)
+
+    # finding and kicking unresponsives
+    unresponsives = find_unresponsives(c2)
+    for each in unresponsives:
+        try:
+            member = ctx.guild.get_member(each)
+            await member.move_to(
+                None, reason="You have been unresponsives to a /talk_with!"
+            )
+        except Exception as e:
+            print("problem kicking the user out of voice!")
+            print(e)
 
 
 async def edit_tw_text(member, temp_messages, after_channel):
