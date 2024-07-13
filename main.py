@@ -128,7 +128,7 @@ def run():
         await ctx.send("Your Discord ID is " + str(ctx.author.id), ephemeral=True)
 
     @bot.hybrid_command()
-    async def test(
+    async def talk_with(
         ctx,
         member: discord.Member,
         description: str | None = None,
