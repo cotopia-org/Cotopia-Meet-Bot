@@ -49,7 +49,7 @@ async def del_temps(channel):
             duration = (
                 int(time.time()) - msg_created_at - 180
             )  # minus 180 seconds, time of waiting before deleting voice channel
-            duration = round((duration / 60), 1)
+            duration = round((duration / 60), 0)
             #
             # await msg.delete()
             # editing the message
@@ -83,10 +83,6 @@ def run():
     @bot.event
     async def on_ready():
         logger.info(f"User: {bot.user} (ID: {bot.user.id})")
-        # for cmd_file in settings.CMDS_DIR.glob("*.py"):
-        #     if cmd_file.name != "__init__.py":
-        #         await bot.load_extension(f"commands.{cmd_file.name[:-3]}")
-
         await bot.tree.sync()
 
     @bot.event
@@ -153,7 +149,7 @@ def run():
         # create voice channel
         channel = await ctx.guild.create_voice_channel(
             name=ctx.author.name + "'s meeting",
-            category=utils.get_category(ctx.guild),
+            category=await utils.get_category(ctx.guild),
             overwrites=utils.create_channel_overwrites(
                 guild=ctx.guild, members=members
             ),
