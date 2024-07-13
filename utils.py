@@ -136,7 +136,7 @@ def find_unresponsives(text: str):
     return unresponsives
 
 
-async def write_no_response(ctx, msg_id: int):
+async def handle_no_response(ctx, msg_id: int):
     await asyncio.sleep(180)  # 3 minutes
     talk_with_msg = await ctx.channel.fetch_message(msg_id)
     c1 = talk_with_msg.content

@@ -102,7 +102,7 @@ def run():
         # Ignoring Bots
         if member.bot:
             return
-        
+
         # calling the  del_temps(channel) func
         task_del_chan = None
         global temp_channels
@@ -113,13 +113,14 @@ def run():
                     name=f"deleting temp channel {before.channel.id}",
                 )
                 await task_del_chan
-        
+
         # When user joins a /talk_with channel
         global temp_messages
         if after.channel.id in temp_messages:
-            await utils.edit_tw_text(member=member, temp_messages=temp_messages, after_channel=after.channel)
+            await utils.edit_tw_text(
+                member=member, temp_messages=temp_messages, after_channel=after.channel
+            )
 
-    
     @bot.hybrid_command(description="Replies with pong!")
     async def ping(ctx):
         print("this is ping. the server is:")
@@ -135,7 +136,7 @@ def run():
         member4: discord.Member | None = None,
     ):
         await ctx.defer()
-        
+
         # create members list
         members = []
         members.append(ctx.author)
@@ -223,7 +224,7 @@ def run():
 
         # Handling No Response
         task_edit_msg = asyncio.create_task(
-            utils.write_no_response(ctx=ctx, msg_id=the_message.id),
+            utils.handle_no_response(ctx=ctx, msg_id=the_message.id),
             name=f"editing talk_with msg with no response {the_message.id} at {ctx.guild.id}",
         )
         await task_edit_msg
