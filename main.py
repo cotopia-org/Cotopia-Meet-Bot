@@ -222,6 +222,15 @@ def run():
             print("something went wrong while playying rings!")
             print(e)
 
+        # check schedule
+        schedule_text = utils.check_schedule(
+            guild_id=ctx.guild.id, member2=member, member3=member3, member4=member4
+        )
+        if schedule_text == "":
+            print("No schedule warnings!")
+        else:
+            await the_message.reply(schedule_text)
+
         # Handling No Response
         task_edit_msg = asyncio.create_task(
             utils.handle_no_response(ctx=ctx, msg_id=the_message.id),

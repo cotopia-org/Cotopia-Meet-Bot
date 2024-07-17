@@ -233,68 +233,94 @@ def check_schedule(guild_id: int, member2, member3, member4):
         if r.status_code == 200:
             status = r.json()["available_status"]
             if "online until " in status:
-                result = (
+                result = ":warning: " + (
                     member2.mention
                     + f" is not in the voice channels right now, but is scheduled to be `{status}`\n"
                 )
-                result.replace("T", "  ")
+                result = result.replace("T", "  ")
             elif "will be available in " in status:
-                result = (
+                result = ":warning: " + (
                     member2.mention
                     + f" is not in the voice channels right now, but is scheduled to be `{status}`\n"
                 )
-                result.replace("will be ", "")
-                result.replace("T", "  ")
+                result = result.replace("will be ", "")
+                result = result.replace("T", "  ")
             elif "not set" in status:
-                result = (
+                result = ":warning: " + (
                     member2.mention
-                    + " is not in the voice channels right now, and has no scheduled time!`\n"
+                    + " is not in the voice channels right now, and has no scheduled time!\n"
                 )
-    if member3.voice is None:
-        params["id_discord"] = member3.id
-        r = requests.get(url=REQUEST_URL, params=params)
-        if r.status_code == 200:
-            status = r.json()["available_status"]
-            if "online until " in status:
-                result = result + (
-                    member3.mention
-                    + f" is not in the voice channels right now, but is scheduled to be `{status}`\n"
-                )
-                result.replace("T", "  ")
-            elif "will be available in " in status:
-                result = result + (
-                    member3.mention
-                    + f" is not in the voice channels right now, but is scheduled to be `{status}`\n"
-                )
-                result.replace("will be ", "")
-                result.replace("T", "  ")
-            elif "not set" in status:
-                result = result + (
-                    member3.mention
-                    + " is not in the voice channels right now, and has no scheduled time!`\n"
-                )
-    if member4.voice is None:
-        params["id_discord"] = member4.id
-        r = requests.get(url=REQUEST_URL, params=params)
-        if r.status_code == 200:
-            status = r.json()["available_status"]
-            if "online until " in status:
-                result = result + (
-                    member4.mention
-                    + f" is not in the voice channels right now, but is scheduled to be `{status}`\n"
-                )
-                result.replace("T", "  ")
-            elif "will be available in " in status:
-                result = result + (
-                    member4.mention
-                    + f" is not in the voice channels right now, but is scheduled to be `{status}`\n"
-                )
-                result.replace("will be ", "")
-                result.replace("T", "  ")
-            elif "not set" in status:
-                result = result + (
-                    member4.mention
-                    + " is not in the voice channels right now, and has no scheduled time!`\n"
-                )
-    
+    if member3 is not None:
+        if member3.voice is None:
+            params["id_discord"] = member3.id
+            r = requests.get(url=REQUEST_URL, params=params)
+            if r.status_code == 200:
+                status = r.json()["available_status"]
+                if "online until " in status:
+                    result = (
+                        result
+                        + ":warning: "
+                        + (
+                            member3.mention
+                            + f" is not in the voice channels right now, but is scheduled to be `{status}`\n"
+                        )
+                    )
+                    result = result.replace("T", "  ")
+                elif "will be available in " in status:
+                    result = (
+                        result
+                        + ":warning: "
+                        + (
+                            member3.mention
+                            + f" is not in the voice channels right now, but is scheduled to be `{status}`\n"
+                        )
+                    )
+                    result = result.replace("will be ", "")
+                    result = result.replace("T", "  ")
+                elif "not set" in status:
+                    result = (
+                        result
+                        + ":warning: "
+                        + (
+                            member3.mention
+                            + " is not in the voice channels right now, and has no scheduled time!\n"
+                        )
+                    )
+    if member4 is not None:
+        if member4.voice is None:
+            params["id_discord"] = member4.id
+            r = requests.get(url=REQUEST_URL, params=params)
+            if r.status_code == 200:
+                status = r.json()["available_status"]
+                if "online until " in status:
+                    result = (
+                        result
+                        + ":warning: "
+                        + (
+                            member4.mention
+                            + f" is not in the voice channels right now, but is scheduled to be `{status}`\n"
+                        )
+                    )
+                    result = result.replace("T", "  ")
+                elif "will be available in " in status:
+                    result = (
+                        result
+                        + ":warning: "
+                        + (
+                            member4.mention
+                            + f" is not in the voice channels right now, but is scheduled to be `{status}`\n"
+                        )
+                    )
+                    result = result.replace("will be ", "")
+                    result = result.replace("T", "  ")
+                elif "not set" in status:
+                    result = (
+                        result
+                        + ":warning: "
+                        + (
+                            member4.mention
+                            + " is not in the voice channels right now, and has no scheduled time!\n"
+                        )
+                    )
+
     return result
